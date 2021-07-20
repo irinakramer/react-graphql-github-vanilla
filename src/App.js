@@ -16,15 +16,19 @@ const GET_ISSUES_OF_REPOSITORY = `
     organization(login: $organization) {
       name
       url
+      createdAt
+      email
       repository(name: $repository) {
         name
         url
+        description
         issues(last: 5) {
           edges {
             node {
               id
               title
               url
+              number
             }
           }
         }
@@ -122,7 +126,7 @@ const Organization = ({ organization, errors }) => {
     <div>
       <p>
         <strong>Issues from Organization:</strong>
-        <a href={organization.url}>{organization.name}</a>
+        <a href={organization.url}>{organization.name}</a>, created {organization.createdAt}, <a href={`mailto:${organization.email}`}>{organization.email}</a>
       </p>
       <Repository repository={organization.repository} />
     </div>
@@ -133,12 +137,12 @@ const Repository = ({ repository }) => (
   <div>
     <p>
       <strong>In Repository: </strong>
-      <a href={repository.url} >{repository.name}</a>
+      <a href={repository.url} >{repository.name}</a> {repository.description}
     </p>
     <ul>
       {repository.issues.edges.map(issue => (
         <li key={issue.node.id}>
-          <a href={issue.node.url}>{issue.node.title}</a>
+          {issue.node.number}: <a href={issue.node.url}>{issue.node.title}</a>
         </li>
       ))}
     </ul>
